@@ -20,22 +20,34 @@ class Manager {
     }
 }
 
-// Constructing a task
 class Task {
     constructor(title, description, dueDate, priority="Low", status=false) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
-        this.priority = priority;
+        this.priority = priority.toLowerCase();
         this.status = status;
+        
+        // Validate priority
+        if (this.priority !== "low" && this.priority !== "high") {
+            throw new Error("Priority must be either 'Low' or 'High'");
+        }
+
+        // Validate status
+        if (typeof this.status !== "boolean") {
+            throw new Error("Status must be either 'true' or 'false'");
+        }
+    }
+    
+    statusToggle() {
+        this.status = this.status === false ? true : false;
     }
 }
 
-// Constructing a project
 class Project {
     constructor(title) {
         this.title = title;
-        this.taskManager = new Manager();
+        this.taskManager = new Manager([]);
     }
 }
 
