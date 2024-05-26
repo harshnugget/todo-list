@@ -1,1 +1,2 @@
-(()=>{"use strict";function e(){console.log("I get called from print.js!")}document.body.appendChild(function(){const n=document.createElement("div"),c=document.createElement("button");return n.innerHTML="Hello webpack",c.innerHTML="Click me and check the console!",c.onclick=e,n.appendChild(c),n}())})();
+(()=>{"use strict";const t=new class{constructor(t,s,i,e){this.title=t,this.description=s,this.dueDate=i,this.priority=e}}("Task 1","Description of Task 1",new Date("2024-06-01"),"High");console.log(t)})();
+//# sourceMappingURL=bundle.js.map
