@@ -10,13 +10,13 @@ class Manager {
     }
 
     createItem(item) {
-        item.id = this.items.length > 0 ? this.items[this.items.length - 1].id + 1 : 0;  // Assign a unique id to each item before pushing to the array
+        item.id = (this.items).length > 0 ? this.items[(this.items).length - 1].id + 1 : 0;  // Assign a unique id to each item before pushing to the array
         this.items.push(item);
     }
 
     deleteItem(itemId) {
-        const index = this[this.items].findIndex(item => itemId === item.id); // Retrieve the index of where item id is found
-        if (index !== -1) this[this.items].splice(index, 1);
+        const index = (this.items).findIndex(item => itemId === item.id); // Retrieve the index of where item id is found
+        if (index !== -1) (this.items).splice(index, 1);
     }
 }
 
