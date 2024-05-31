@@ -6,6 +6,29 @@
     <title>Todo List</title>
 </head>
 <body>
-
+    <header>
+        <img src="images/main_logo.svg" width="50px" alt="Main Logo" />
+        <h1>Todo List</h1>
+    </header>
+    <main>
+        <aside id="sidebar">
+            <h2>Projects</h2>
+            <ul id="project-list">
+            </ul>
+            <button id="add-project-btn">Add Project</button>
+            <!-- Additional projects will go here -->
+        </aside>
+        <section id="task-view">
+            <h2>Tasks</h2>
+            <div id="tasks-container">
+                <input type="text" id="new-task-input" placeholder="New Task">
+                <button id="add-task-btn">Add Task</button>
+                <ul id="task-list">
+                    <!-- Task items will go here -->
+                </ul>
+                <!-- Tasks will be displayed here -->
+            </div>
+        </section>
+    </main>
 </body>
 </html>
