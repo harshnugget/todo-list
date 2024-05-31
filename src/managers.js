@@ -1,8 +1,3 @@
-// Behind the scenes logic should go here
-// Everything here should be controllable through the browser console
-
-// Create a class that deals with managing Tasks and Projects
-// Functionality includes creating or deleting new tasks/projects, and assigning IDs
 class Manager {
     constructor(array=[]) {
         this.items = [];
@@ -23,34 +18,9 @@ class Manager {
     }
 }
 
-class Task {
-    constructor(title, description, dueDate, priority="Low", status=false) {
-        this.title = title;
-        this.description = description;
-        this.dueDate = dueDate;
-        this.priority = priority.toLowerCase();
-        this.status = status;
-        
-        if (!["low", "high"].includes(this.priority)) {
-            throw new Error("Priority must be either 'Low' or 'High'");
-        }
-
-        if (typeof this.status !== "boolean") {
-            throw new Error("Status must be a boolean");
-        }
-    }
-}
-
-class Project {
-    constructor(title) {
-        this.title = title;
-        this.taskManager = new Manager([]);
-    }
-}
-
 class ProjectManager extends Manager {
-    constructor(project) {
-        super(project);
+    constructor(projects=[]) {
+        super(projects);
         this._activeProjectId = null
     }
 
@@ -73,4 +43,10 @@ class ProjectManager extends Manager {
     }
 }
 
-export { Manager, Task, Project, ProjectManager };
+class TaskManager extends Manager {
+    constructor(tasks=[]) {
+        super(tasks);
+    }
+}
+
+export { ProjectManager, TaskManager }
