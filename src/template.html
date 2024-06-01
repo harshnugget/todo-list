@@ -13,10 +13,10 @@
     <main>
         <aside id="sidebar">
             <h2>Projects</h2>
+            <button id="add-project-btn">Add Project</button>
             <ul id="project-list">
                 <!-- Projects will be displayed here -->
             </ul>
-            <button id="add-project-btn">Add Project</button>
         </aside>
         <section id="task-view">
             <h2>Tasks</h2>
@@ -28,6 +28,25 @@
                 </ul>
             </div>
         </section>
+        <section id="task-view-panel">
+            <h1>Task Title</h1>
+            <label for="due-date">Due date:</label>
+            <input type="date" id="due-date" name="due-date">
+            <div id="priority">
+                <label>Priority:</label>
+                <p>Low</p>
+                <label class="switch">
+                    <input id="switch" type="checkbox">
+                    <span class="slider round"></span>
+                </label>
+                <p>High</p>
+            </div>
+            <p>Notes:</p>
+            <span id="task-note" role="textbox" contenteditable></span>
+        </section>
     </main>
+    <footer>
+        Footer
+    </footer>
 </body>
 </html>

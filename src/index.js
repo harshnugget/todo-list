@@ -1,14 +1,15 @@
+import './style.css';
 import Project from './project.js';
 import Task from './task.js';
 import { ProjectManager } from './managers.js';
-import UI  from './dom.js';
+import UIManager  from './dom.js';
 import mainLogo from './images/main_logo.svg';
 
 document.querySelector("#main_logo").src = mainLogo;
 
 window.app = (() => {
     const projectManager = new ProjectManager();
-    const uiManager = new UI({ 
+    const uiManager = new UIManager({ 
         createProject, 
         createTask,
         deleteProject ,
@@ -21,6 +22,10 @@ window.app = (() => {
     function initialize() {
         projectLoader();
         createProject("Default Project");
+        const defaultProject = document.querySelector(`input[value="Default Project"]`);
+        defaultProject.setSelectionRange(0, 0);
+        defaultProject.setAttribute("readonly", true);
+        defaultProject.blur();
         createTask("Example 1");
         createTask("Example 2");
     }
