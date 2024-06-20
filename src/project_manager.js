@@ -98,7 +98,9 @@ export default class ProjectManager extends Manager {
                     this.removeProject(project);
                     return;
                 default:
-                    this.activeProject = project;
+                    if (project !== this.activeProject) {
+                        this.activeProject = project;
+                    } 
             }
         });
     }

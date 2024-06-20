@@ -1,6 +1,6 @@
 import { UITools, Manager } from "./manager.js"
 
-export default class TaskManager extends Manager {
+class TaskManager extends Manager {
     constructor(activeProjectGetter, taskList) {
         super(taskList);
         this.activeProjectGetter = activeProjectGetter;
@@ -85,6 +85,69 @@ export default class TaskManager extends Manager {
         if (!this.activeProject) {
             this.tasks = [];
         }
+        this.clearActiveTask();
         super.objectLoader(this.tasks);
     }
 }
+
+class TaskPanel {
+    constructor(taskManager) {
+        this.taskManager = taskManager
+        
+        this.panelElement = document.querySelector("#task-view-panel");
+        this.titleElement = this.panelElement.querySelector("#task-title");
+        this.dueDateElement = this.panelElement.querySelector("#task-due-date");
+        this.priorityElement = this.panelElement.querySelector("#task-priority");
+        this.notesElement = this.panelElement.querySelector("#task-notes");
+
+        this.setupEventListeners();
+    }
+
+    get activeTask() {
+        return this.taskManager.activeTask;
+    }
+
+    setupEventListeners() {
+        document.addEventListener("click", (e) => {
+            if (!this.activeTask) {
+                this.closeTaskPanel();
+            }
+        });
+        this.dueDateElement.addEventListener("click", this.handleDateChange.bind(this));
+        this.priorityElement.addEventListener("change", this.handlePriorityChange.bind(this));
+        this.notesElement.addEventListener("click", this.handleNotesInput.bind(this));
+    }
+
+    handleDateChange(e) {
+        e.target.addEventListener("blur", (e) => this.activeTask.dueDate = e.target.value, { once: true });
+    }
+
+    handlePriorityChange(e) {
+        this.activeTask.priority = e.target.checked === true ? 1 : 0;
+    }
+
+    handleNotesInput(e) {
+        e.target.addEventListener("blur", (e) => this.activeTask.notes = e.target.value, { once: true });
+    }
+
+    updateTaskPanel(title, dueDate, priority, notes) {
+        this.titleElement.textContent = title;
+        this.dueDateElement.value = dueDate;
+        this.priorityElement.checked = priority === 1 ? true : false;
+        this.notesElement.value = notes;
+    }
+
+    openTaskPanel(task) {
+        this.panelElement.style.display = "block";
+        if (task) {
+           this.updateTaskPanel(task.title, task.dueDate, task.priority, task.notes); 
+        }
+    }
+
+    closeTaskPanel() {
+        this.panelElement.style.display = "none";
+    }
+}
+
+export default TaskManager
+export { TaskPanel };

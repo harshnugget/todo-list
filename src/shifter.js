@@ -1,9 +1,8 @@
-export default class ElementShifter {
-    constructor(list, callback=null) {
-        this.parentNode = list;
+export default class Shifter {
+    constructor(parentNode) {
+        this.parentNode = parentNode;
         this.nodeList = Array.from(this.parentNode.children);
         this.elementPosTracker = new WeakMap();
-        this.callback = callback;
     }
 
     updateCoordinates() {
@@ -82,10 +81,22 @@ export default class ElementShifter {
         // Capture coordinates after shifting
         this.updateCoordinates();
 
-        if (typeof this.callback === "function") {
-             this.callback(fromIndex, toIndex);
+        return this.nodeList;
+    }
+
+    shiftObject(objectArray, fromIndex, toIndex) {
+        if (!objectArray) {
+            throw ReferenceError("shiftObject: Invalid object array");
         }
 
-        return this.nodeList;
+        if (fromIndex < 0 || fromIndex >= objectArray.length || toIndex < 0 || toIndex >= objectArray.length) {
+            console.warn("shiftObject: Indices out of bounds");
+            return objectArray;
+        }
+
+        const [movedObject] = objectArray.splice(fromIndex, 1);
+        objectArray.splice(toIndex, 0, movedObject);
+        
+        return objectArray;
     }
 }

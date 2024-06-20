@@ -1,8 +1,9 @@
-import ElementShifter from "./element_shifter.js";
+import Shifter from "./shifter.js";
 
-export default class DragAndDropper extends ElementShifter {
-    constructor(list, callback=null) {
-        super(list, callback);
+export default class DragAndDropper extends Shifter {
+    constructor(parentNode, objectArrayGetter=null) {
+        super(parentNode);
+        this.objectArrayGetter = objectArrayGetter;
         this.identifier = "draggable";
         this.dragOverFlag = false;
         this.dragDelay = null;
@@ -61,6 +62,10 @@ export default class DragAndDropper extends ElementShifter {
                     // Make each element in the nodeList draggable on animation end
                     this.nodeList.forEach(e => e.draggable = true);
                     this.dragOverFlag = false;
+
+                    if (this.objectArrayGetter) {
+                        this.shiftObject(this.objectArrayGetter(), fromIndex, toIndex);
+                    }
                 }
             }
 
