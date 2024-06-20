@@ -1,8 +1,15 @@
-import { TaskManager } from './managers.js';
-
 export default class Project {
-    constructor(title) {
+    constructor(title="New Project") {
         this.title = title;
-        this.taskManager = new TaskManager([]);
+        this.tasks = []
+    }
+
+    addTask(task) {
+        this.tasks.push(task);
+    }
+
+    deleteTask(task) {
+        const indexOfTask = this.tasks.findIndex(t => t === task);
+        this.tasks.splice(indexOfTask, 1);
     }
 }

@@ -1,130 +1,60 @@
 body {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     font-family: Arial, sans-serif;
     margin: 0;
     height: 100vh;
-    grid-template-rows: min-content 1fr min-content;
-    }
-
-header {
-    border-width: 2px;
-    }
-
-main {
-    display: grid;
-    grid-template-areas:
-        "sidebar task-view task-view-panel";
-    grid-template-columns: max-content 1fr max-content;
-    border-width: 2px;
-}
-
-#sidebar {
-    grid-area: sidebar;
-    border-style: solid;
-    border-width: 2px;
-}
-
-#task-view {
-    grid-area: task-view;
-    border-style: solid;
-    border-width: 2px;
-}
-
-footer {
-    border-style: solid;
-    border-width: 2px;
-}
-
-#project-list,
-#task-list {
-    list-style: none;
-    padding: 0;
-}
-
-.project,
-.task {
-    border-style: solid;
-    border-width: 2px;
+  }
+  header {
+    background-color: #4CAF50;
+    color: white;
     padding: 10px;
-}
-
-.project.active,
-.task.active {
-    border-color: rgb(255, 0, 0);
-}
-
-/* Task panel slide in/out */
-#task-view-panel {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    height: 100%;
-    border-style: solid;
-    border-width: 2px;
-    background-color: white;
-    transition: right 0.3s ease;
-    padding: 20px;
-}
-
-#task-view-panel.visible {
-    right: 0;
-}
-
-/* Task priority switch */
-#priority {
     display: flex;
     align-items: center;
-}
-.switch {
-    position: relative;
+  }
+  header img {
+    height: 40px;
+  }
+  main {
+    display: flex;
+    flex: 1;
+  }
+  #sidebar {
+    width: max-content;
+    background-color: #f4f4f4;
+    padding: 10px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  }
+  #task-view {
+    flex: 1;
+    padding: 20px;
+  }
+  #project-list,
+  #task-list {
+    padding: 0;
+    list-style: none;
+  }
+  .task, 
+  .project {
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    user-select: none;
+  }
+  .task input {
+    margin-right: 10px;
+  }
+  .project-name-input[readonly] {
     display: inline-block;
-    width: 30px;
-    height: 17px;
-}
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #56b65a;
-    -webkit-transition: .4s;
-    transition: .4s;
-}
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 13px;
-    width: 13px;
-    left: 2px;
-    bottom: 2px;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
-}
-input:checked + .slider {
-    background-color: #d32f2f;
-}
-input:checked + .slider:before {
-    -webkit-transform: translateX(13px);
-    -ms-transform: translateX(13px);
-    transform: translateX(13px);
-}
-
-#task-note {
-    display: block;
-    min-width: 200px;
-    max-width: 200px;
-    min-height: 50px;
-    border-style: solid;
-    border-width: 2px;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    white-space: pre-wrap;
+    border: none;
+    background: none;
+    outline: none;
+  }
+  .task.active,
+  .project.active {
+    border-color: red;
+  }
+  #task-view-panel {
+    display: none;
 }

@@ -28,21 +28,11 @@
                 </ul>
             </div>
         </section>
-        <section id="task-view-panel">
-            <h1>Task Title</h1>
-            <label for="due-date">Due date:</label>
-            <input type="date" id="due-date" name="due-date">
-            <div id="priority">
-                <label>Priority:</label>
-                <p>Low</p>
-                <label class="switch">
-                    <input id="switch" type="checkbox">
-                    <span class="slider round"></span>
-                </label>
-                <p>High</p>
-            </div>
-            <p>Notes:</p>
-            <span id="task-note" role="textbox" contenteditable></span>
+        <aside id="task-view-panel">
+            <h1 id="task-title">Task Title</h1>
+            <input type="date" id="task-due-date" name="task-due-date">
+            <input id="task-priority" type="checkbox">
+            <textarea id="task-notes"></textarea>
         </section>
     </main>
     <footer>
