@@ -1,7 +1,7 @@
 import "./style.css";
 import Project from "./project.js";
 import Task from "./task.js";
-import { TaskPanel } from "./task_manager.js";
+import TaskPanel from "./task_panel.js";
 import ProjectManager from "./project_manager.js";
 import DragAndDropper from "./drag_dropper.js";
 import mainLogo from "./images/main_logo.svg";

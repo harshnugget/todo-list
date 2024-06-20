@@ -61,23 +61,29 @@ class TaskManager extends Manager {
 
     createEventListeners(task, element) {
         const inputElement = element.querySelector("input");
+        const titleElement = element.querySelector("span");
         const removeButton = element.querySelector("button");
 
         element.addEventListener("click", (e) => {
-                switch(e.target) {
-                    case inputElement:
-                        task.status = e.target.checked;
-                        return;
-                    case removeButton:
-                        this.removeTask(task);
-                        return;
-                    default:
-                        if (task === this.activeTask) {
-                            this.clearActiveTask();
-                        } else {
-                             this.activeTask = task;
-                        }
-                }
+            switch(e.target) {
+                case inputElement:
+                    task.status = e.target.checked;
+                    if (e.target.checked) {
+                        titleElement.classList.add("completed-task");
+                    } else {
+                        titleElement.classList.remove("completed-task");
+                    }
+                    return;
+                case removeButton:
+                    this.removeTask(task);
+                    return;
+                default:
+                    if (task === this.activeTask) {
+                        this.clearActiveTask();
+                    } else {
+                            this.activeTask = task;
+                    }
+            }
         });
     }
 
@@ -90,64 +96,4 @@ class TaskManager extends Manager {
     }
 }
 
-class TaskPanel {
-    constructor(taskManager) {
-        this.taskManager = taskManager
-        
-        this.panelElement = document.querySelector("#task-view-panel");
-        this.titleElement = this.panelElement.querySelector("#task-title");
-        this.dueDateElement = this.panelElement.querySelector("#task-due-date");
-        this.priorityElement = this.panelElement.querySelector("#task-priority");
-        this.notesElement = this.panelElement.querySelector("#task-notes");
-
-        this.setupEventListeners();
-    }
-
-    get activeTask() {
-        return this.taskManager.activeTask;
-    }
-
-    setupEventListeners() {
-        document.addEventListener("click", (e) => {
-            if (!this.activeTask) {
-                this.closeTaskPanel();
-            }
-        });
-        this.dueDateElement.addEventListener("click", this.handleDateChange.bind(this));
-        this.priorityElement.addEventListener("change", this.handlePriorityChange.bind(this));
-        this.notesElement.addEventListener("click", this.handleNotesInput.bind(this));
-    }
-
-    handleDateChange(e) {
-        e.target.addEventListener("blur", (e) => this.activeTask.dueDate = e.target.value, { once: true });
-    }
-
-    handlePriorityChange(e) {
-        this.activeTask.priority = e.target.checked === true ? 1 : 0;
-    }
-
-    handleNotesInput(e) {
-        e.target.addEventListener("blur", (e) => this.activeTask.notes = e.target.value, { once: true });
-    }
-
-    updateTaskPanel(title, dueDate, priority, notes) {
-        this.titleElement.textContent = title;
-        this.dueDateElement.value = dueDate;
-        this.priorityElement.checked = priority === 1 ? true : false;
-        this.notesElement.value = notes;
-    }
-
-    openTaskPanel(task) {
-        this.panelElement.style.display = "block";
-        if (task) {
-           this.updateTaskPanel(task.title, task.dueDate, task.priority, task.notes); 
-        }
-    }
-
-    closeTaskPanel() {
-        this.panelElement.style.display = "none";
-    }
-}
-
-export default TaskManager
-export { TaskPanel };
+export default TaskManager;
