@@ -48,7 +48,7 @@ class TaskManager extends Manager {
         const childElements = {
             "input": UITools.newElement("input", {"type": "checkbox"}),
             "span": UITools.newElement("span", {}, task.title),
-            "remove-btn": UITools.newElement("button", {}, "Remove")
+            "remove-btn": UITools.newElement("button", {"type": "button", "class": "remove-task-btn"}, "Remove")
         };
         childElements["input"].checked = task.status === true;
 
@@ -87,12 +87,31 @@ class TaskManager extends Manager {
         });
     }
 
-    taskLoader() {
+    getCompletedTasks() {
+        const tasks = this.tasks.filter(task => task.status === false);
+        return tasks;
+    }
+
+    getUncompletedTasks() {
+        const tasks = this.tasks.filter(task => task.status === true);
+        return tasks;
+    }
+
+    taskLoader(filter=0) {
         if (!this.activeProject) {
             this.tasks = [];
         }
         this.clearActiveTask();
-        super.objectLoader(this.tasks);
+ 
+        if (filter === 0) {
+           super.objectLoader(this.tasks); 
+        } else if (filter === 1) {
+            super.objectLoader(this.getCompletedTasks());
+        } else if (filter === 2) {
+            super.objectLoader(this.getUncompletedTasks());
+        } else {
+            console.error('taskLoader: Invalid filter value:', filter);
+        }  
     }
 }
 

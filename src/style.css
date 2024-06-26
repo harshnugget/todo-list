@@ -1,10 +1,15 @@
+/* General Styles */
 body {
   display: flex;
   flex-direction: column;
   font-family: Arial, sans-serif;
   margin: 0;
   height: 100vh;
+  background-color: #f0f0f0;
+  color: #333;
 }
+
+/* Header Styles */
 header {
   background-color: #4CAF50;
   color: white;
@@ -14,58 +19,156 @@ header {
 }
 header img {
   height: 40px;
+  margin-right: 10px;
 }
+
+/* Main Layout Styles */
 main {
   display: flex;
   flex: 1;
 }
+
+/* Sidebar Styles */
 #sidebar {
   width: max-content;
   background-color: #f4f4f4;
   padding: 10px;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
-#task-view {
-  flex: 1;
-  padding: 20px;
+#sidebar h2 {
+  margin-top: 0;
 }
-#project-list,
-#task-list {
+#project-list {
   padding: 0;
   list-style: none;
 }
-.task, 
-.project {
+
+/* Project and Task List Styles */
+.project,
+.task {
+  display: flex;
+  align-items: center;
   padding: 10px;
   margin: 5px 0;
   background-color: #fff;
   border: 1px solid #ddd;
+  cursor: pointer;
   user-select: none;
 }
-.task input {
-  margin-right: 10px;
+.project.active,
+.task.active {
+  border-color: #4CAF50;
 }
-.project-name-input[readonly] {
-  display: inline-block;
-  border: none;
-  background: none;
+.project-name-input {
+  font-size: 16px;
+}
+.project-name-input:read-only {
   outline: none;
+  border-style: none;
+  cursor: pointer;
 }
-.task.active,
-.project.active {
-  border-color: red;
+
+/* Task View Styles */
+#task-view {
+  flex: 1;
+  padding: 20px;
 }
-#task-view-panel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+#task-view h2 {
+  margin-top: 0;
 }
-#task-title {
-  font-size: larger;
-  border: none;
-  background: none;
-  outline: none;
+#tasks-container {
+  display: grid;
+  grid-template-columns: minmax(150px, 300px) 1fr;
+  grid-template-rows: min-content 1fr;
+  gap: 10px;
+}
+#new-task-input {
+  align-self: center;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+#add-task-btn {
+  width: max-content;
+}
+#task-list {
+  padding: 0;
+  list-style: none;
+  grid-column: 1 / -1;
 }
 .completed-task {
   text-decoration: line-through;
+}
+
+/* Task Panel Styles */
+#task-view-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background-color: #fff;
+  border-left: 1px solid #ddd;
+}
+#task-view-panel span {
+  width: 80px;
+}
+#task-title {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+  border: none;
+  background: none;
+  outline: none;
+  text-overflow: ellipsis;
+}
+#task-title:focus {
+  border-style: solid;
+}
+#due-date-container,
+#priority-container {
+  margin-bottom: 10px;
+}
+#notes-container {
+  width: 100%;
+  min-height: 5rem;
+  border: 1px solid #ddd;
+  padding: 5px;
+  border-radius: 3px;
+  outline: none;
+  cursor: text;
+}
+.task-notes {
+  width: 100%;
+  outline: none;
+  border-style: none;
+}
+
+/* Button Styles */
+button {
+  padding: 5px 10px;
+  border: none;
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+  border-radius: 3px;
+}
+button:hover {
+  background-color: #45a049;
+}
+button.remove-task-btn,
+button.remove-project-btn,
+button.rename-project-btn {
+  margin-left: 5px;
+  background-color: #f44336;
+}
+button.remove-task-btn:hover,
+button.remove-project-btn:hover,
+button.rename-project-btn:hover {
+  background-color: #e41e1e;
+}
+
+/* Footer styles */
+footer {
+  display: flex;
+  justify-content: center;
+  background-color: rgb(218, 218, 218);
+  padding: 15px 0;
 }

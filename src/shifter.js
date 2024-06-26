@@ -1,8 +1,11 @@
 export default class Shifter {
     constructor(parentNode) {
         this.parentNode = parentNode;
-        this.nodeList = Array.from(this.parentNode.children);
         this.elementPosTracker = new WeakMap();
+    }
+
+    get nodeList() {
+        return Array.from(this.parentNode.children);
     }
 
     updateCoordinates() {
@@ -74,9 +77,6 @@ export default class Shifter {
         } else {
             this.parentNode.insertBefore(this.nodeList[fromIndex], this.nodeList[toIndex]);
         }
-
-        // Update nodeList to reflect the new order
-        this.nodeList = Array.from(this.parentNode.children);
 
         // Capture coordinates after shifting
         this.updateCoordinates();

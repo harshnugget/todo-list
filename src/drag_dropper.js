@@ -5,8 +5,7 @@ export default class DragAndDropper extends Shifter {
         super(parentNode);
         this.objectArrayGetter = objectArrayGetter;
         this.identifier = "draggable";
-        this.dragOverFlag = false;
-        this.dragDelay = null;
+        this.dragTimeout = null;
         this.elementBeingDragged = null;
         this.elementHoveredOver = null;
     } 
@@ -23,14 +22,10 @@ export default class DragAndDropper extends Shifter {
 
     handleDragStart(e) {
         this.elementBeingDragged = e.target;
-
-        // Update the nodeList
-        this.nodeList = Array.from(this.elementBeingDragged.parentNode.children);
     } 
 
     handleDragEnd() {
-        clearTimeout(this.dragDelay);
-        this.dragOverFlag = false;
+        clearTimeout(this.dragTimeout);
         this.elementBeingDragged = null;
         this.elementHoveredOver = null;
     }
@@ -44,32 +39,30 @@ export default class DragAndDropper extends Shifter {
         }
 
         this.elementHoveredOver = elementHoveredOverTemp;
+        
+        if (this.elementBeingDragged !== this.elementHoveredOver && !this.dragTimeout) {
+            this.dragTimeout = setTimeout(() => this.shift(), 500);
+        }
+    }
 
-        if (this.elementBeingDragged !== this.elementHoveredOver && !this.dragOverFlag) {
-            this.dragOverFlag = true;
+    shift() {
+        const fromIndex = this.nodeList.findIndex(e => e === this.elementBeingDragged);
+        const toIndex = this.nodeList.findIndex(e => e === this.elementHoveredOver);
+        
+        this.shiftElement(fromIndex, toIndex);
+        this.animateShift("ease", "0.5", () => animationEndHandler());
 
-            const dragDelayTimeout = () => {
-                const fromIndex = this.nodeList.findIndex(e => e === this.elementBeingDragged);
-                const toIndex = this.nodeList.findIndex(e => e === this.elementHoveredOver);
+        // Make each element in the nodeList undraggable during animation
+        this.nodeList.forEach(e => e.draggable = false);
 
-                this.shiftElement(fromIndex, toIndex);
-                this.animateShift("ease", "0.5", animationEndHandler.bind(this));
+        const animationEndHandler = () => {
+            // Make each element in the nodeList draggable on animation end
+            this.nodeList.forEach(e => e.draggable = true);
+            this.dragTimeout = null;
 
-                // Make each element in the nodeList undraggable during animation
-                this.nodeList.forEach(e => e.draggable = false);
-
-                function animationEndHandler() {
-                    // Make each element in the nodeList draggable on animation end
-                    this.nodeList.forEach(e => e.draggable = true);
-                    this.dragOverFlag = false;
-
-                    if (this.objectArrayGetter) {
-                        this.shiftObject(this.objectArrayGetter(), fromIndex, toIndex);
-                    }
-                }
+            if (this.objectArrayGetter) {
+                this.shiftObject(this.objectArrayGetter(), fromIndex, toIndex);
             }
-
-            this.dragDelay = setTimeout(() => dragDelayTimeout(), 500);
         }
     }
 }

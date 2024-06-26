@@ -34,6 +34,7 @@ const app = (() => {
         const addProjectButton = document.querySelector("#add-project-btn");
         const newTaskInput = document.querySelector("#new-task-input");
         const addTaskButton = document.querySelector("#add-task-btn");
+        const filterTask = document.querySelector("#task-filter");
 
         addProjectButton.addEventListener("click", () => {
             createProject("Untitled Project");
@@ -52,11 +53,31 @@ const app = (() => {
                 newTaskInput.value = "";
             }
         });
+
+        filterTask.addEventListener("change", (e) => {
+            switch (e.target.value) {
+                case "0":
+                    taskManager.taskLoader(0);
+                    return;
+                case "1":
+                    taskManager.taskLoader(1);
+                    return;
+                case "2":
+                    taskManager.taskLoader(2);
+                    return;
+            }
+        });
     }
 
     function createProject(title) {
         const project = new Project(title)
         const obj = projectManager.createProject(project);
+
+        // Select input of newly created projects for renaming
+        if (projectManager.projects.length > 1) {
+            const inputElement = obj.element.querySelector(".project-name-input");
+            projectManager.renameProject(project, inputElement);
+        }
 
         // Drag and drop stuff
         projectDragger.createEventListeners(obj.element);

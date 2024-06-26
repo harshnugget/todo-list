@@ -23,6 +23,14 @@
             <div id="tasks-container">
                 <input type="text" id="new-task-input" placeholder="New Task">
                 <button id="add-task-btn">Add Task</button>
+                <div>
+                   <span>Filter:</span>
+                   <select name="filter" id="task-filter">
+                       <option value="0">All</option>
+                       <option value="1">Unfinished</option>
+                       <option value="2">Finished</option>
+                   </select>
+                </div>
                 <ul id="task-list">
                     <!-- Tasks will be displayed here -->
                 </ul>
@@ -30,9 +38,20 @@
         </section>
         <aside id="task-view-panel">
             <input type="text" id="task-title">
-            <input type="date" id="task-due-date" name="task-due-date">
-            <input id="task-priority" type="checkbox">
-            <textarea id="task-notes"></textarea>
+            <div id="due-date-container">
+                <span>Due Date:</span>
+                <input type="date" id="task-due-date" name="task-due-date">
+            </div>
+            <div id="priority-container">
+                <span>Priority:</span>
+                <select name="priority" id="task-priority">
+                    <option value="0">Low</option>
+                    <option value="1">High</option>
+                </select>
+            </div>
+            <label id="notes-container" for="task-notes">
+                <textarea id="task-notes" class="task-notes"></textarea>
+            </label>
         </section>
     </main>
     <footer>

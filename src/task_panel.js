@@ -9,6 +9,7 @@ export default class TaskPanel {
         this.notesElement = this.panelElement.querySelector("#task-notes");
 
         this.setupEventListeners();
+        this.setupData();
     }
 
     get activeTask() {
@@ -26,21 +27,20 @@ export default class TaskPanel {
         this.priorityElement.addEventListener("change", this.handlePriorityChange.bind(this));
         this.notesElement.addEventListener("click", this.handleNotesInput.bind(this));
         this.notesElement.addEventListener("input", this.changeInputBoxHeight.bind(this));
-        this.notesElement.rows = "1";
-        this.notesElement.style.overflow = "hidden";
-        this.notesElement.style.resize = "none";
+    }
 
-        this.clone = this.notesElement.cloneNode();
-        this.clone.style.position = "fixed";
-        this.clone.style.visibility = "hidden";
-        this.panelElement.appendChild(this.clone);
+    setupData() {
+        this.notesElement.rows = "1";
+        this.notesElement.style.resize = "none";
+        this.notesElement.style.overflow = "hidden";    // This is important to have on the clone
     }
 
     handleTitleChange(e) {
         e.target.addEventListener("blur", (e) => {
             this.activeTask.title = e.target.value
-            const taskTitleElement = this.taskManager.elementMap.get(this.activeTask);
-            taskTitleElement.querySelector("span").textContent = e.target.value;
+            const taskElement = this.taskManager.elementMap.get(this.activeTask);
+            const taskTitleElement = taskElement.querySelector("span");
+            taskTitleElement.textContent = e.target.value;
         }, { once: true });
     }
 
@@ -49,7 +49,7 @@ export default class TaskPanel {
     }
 
     handlePriorityChange(e) {
-        this.activeTask.priority = e.target.checked === true ? 1 : 0;
+        this.activeTask.priority = parseInt(e.target.value);
     }
 
     handleNotesInput(e) {
@@ -59,7 +59,7 @@ export default class TaskPanel {
     updateTaskPanel(title, dueDate, priority, notes) {
         this.titleElement.value = title;
         this.dueDateElement.value = dueDate;
-        this.priorityElement.checked = priority === 1 ? true : false;
+        this.priorityElement.value = priority;
         this.notesElement.value = notes;
     }
 
@@ -75,6 +75,10 @@ export default class TaskPanel {
     }
 
     changeInputBoxHeight(e) {
+        if (!this.clone) {
+            this.clone = this.cloneElement(e.target);
+        }
+
         this.clone.value = e.target.value;
 
         // Calculate the required number of rows based on scrollHeight
@@ -87,5 +91,16 @@ export default class TaskPanel {
         } else if (scrollHeight < clientHeight) {
             e.target.rows -= 1;
         }
+    }
+
+    cloneElement(element) {
+        const clone = element.cloneNode();
+        clone.removeAttribute("id");
+        clone.style.position = "fixed";
+        clone.style.width = `${element.offsetWidth}px`;
+        clone.style.visibility = "hidden";
+        element.parentNode.appendChild(clone);
+        
+        return clone;
     }
 }
