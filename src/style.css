@@ -99,6 +99,12 @@ main {
 .completed-task {
   text-decoration: line-through;
 }
+.priority-symbol svg {
+  fill: rgb(255, 0, 0);
+}
+.task > span {
+  margin-right: auto;
+}
 
 /* Task Panel Styles */
 #task-view-panel {

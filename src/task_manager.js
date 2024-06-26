@@ -1,4 +1,5 @@
 import { UITools, Manager } from "./manager.js"
+import { priorityHighSymbol } from "./images/svg.js";
 
 class TaskManager extends Manager {
     constructor(activeProjectGetter, taskList) {
@@ -48,9 +49,12 @@ class TaskManager extends Manager {
         const childElements = {
             "input": UITools.newElement("input", {"type": "checkbox"}),
             "span": UITools.newElement("span", {}, task.title),
+            "priority-symbol": UITools.newElement("div", {"class": "priority-symbol"}),
             "remove-btn": UITools.newElement("button", {"type": "button", "class": "remove-task-btn"}, "Remove")
         };
         childElements["input"].checked = task.status === true;
+        childElements["priority-symbol"].innerHTML = priorityHighSymbol;
+        childElements["priority-symbol"].style.visibility = "hidden";
 
         Object.values(childElements).forEach(element => {
             UITools.appendElement(parentElement, element);
@@ -70,8 +74,10 @@ class TaskManager extends Manager {
                     task.status = e.target.checked;
                     if (e.target.checked) {
                         titleElement.classList.add("completed-task");
+                        this.togglePrioritySymbol(task, 0);
                     } else {
                         titleElement.classList.remove("completed-task");
+                        this.togglePrioritySymbol(task, task.priority);
                     }
                     return;
                 case removeButton:
@@ -95,6 +101,16 @@ class TaskManager extends Manager {
     getUncompletedTasks() {
         const tasks = this.tasks.filter(task => task.status === true);
         return tasks;
+    }
+
+    togglePrioritySymbol(task, priority) {
+        const element = this.elementMap.get(task);
+
+        if (priority == 0) {
+            element.querySelector(".priority-symbol").style.visibility = "hidden";
+        } else if (priority == 1) {
+            element.querySelector(".priority-symbol").style.visibility = "visible";
+        }
     }
 
     taskLoader(filter=0) {

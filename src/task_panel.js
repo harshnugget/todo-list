@@ -49,6 +49,7 @@ export default class TaskPanel {
     }
 
     handlePriorityChange(e) {
+        this.taskManager.togglePrioritySymbol(this.activeTask, e.target.value);
         this.activeTask.priority = parseInt(e.target.value);
     }
 
