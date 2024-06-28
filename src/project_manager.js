@@ -1,5 +1,6 @@
 import { UITools, Manager } from "./manager.js"
 import TaskManager from "./task_manager.js";
+import { deleteIcon, renameIcon } from "./images/svg.js";
 
 export default class ProjectManager extends Manager {
     constructor(projectList, taskList) {
@@ -76,6 +77,8 @@ export default class ProjectManager extends Manager {
             "rename-btn": UITools.newElement("button", {"type": "button", "class": "rename-project-btn"}, "Rename"), 
             "remove-btn": UITools.newElement("button", {"type": "button", "class": "remove-project-btn"}, "Remove")
         };
+        childElements["rename-btn"].innerHTML = renameIcon;
+        childElements["remove-btn"].innerHTML = deleteIcon;
 
         Object.values(childElements).forEach(element => {
             parentElement.appendChild(element);

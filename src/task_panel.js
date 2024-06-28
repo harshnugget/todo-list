@@ -1,3 +1,5 @@
+import { deleteIcon } from "./images/svg.js";
+
 export default class TaskPanel {
     constructor(taskManager) {
         this.taskManager = taskManager

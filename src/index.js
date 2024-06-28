@@ -73,6 +73,8 @@ const app = (() => {
         const project = new Project(title)
         const obj = projectManager.createProject(project);
 
+        updateLocalStorage();
+        
         // Select input of newly created projects for renaming
         if (projectManager.projects.length > 1) {
             const inputElement = obj.element.querySelector(".project-name-input");
@@ -90,6 +92,8 @@ const app = (() => {
         const task = new Task(title);
         const obj = taskManager.createTask(task);
 
+        updateLocalStorage();
+
         // Drag and drop stuff
         taskDragger.createEventListeners(obj.element);
 
@@ -103,6 +107,12 @@ const app = (() => {
                 taskPanel.closeTaskPanel();
             }
         });
+    }
+
+    function updateLocalStorage() {
+        const stringifyObject = JSON.stringify(projectManager.projects);
+
+        localStorage.setItem("projects", stringifyObject);
     }
 
     return {

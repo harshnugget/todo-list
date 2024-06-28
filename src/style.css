@@ -7,6 +7,7 @@
   --primary-color-hover: #449e47;
   --secondary-color: #f44336;
   --secondary-color-hover: #da3c30;
+  --outline-color: #3498db;
 }
 
 * {
@@ -19,8 +20,11 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   height: 100vh;
-  background-color: #f0f0f0;
+  background-color: #e0e0e0;
   color: #333;
+  max-width: 1600px;
+  margin: 0 auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Header Styles */
@@ -47,8 +51,9 @@ main {
 #sidebar {
   width: max-content;
   background-color: #f4f4f4;
-  padding: 10px;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  padding: 20px 10px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+  z-index: 1;
 }
 #sidebar h2 {
   margin-top: 0;
@@ -64,9 +69,10 @@ main {
   display: flex;
   align-items: center;
   padding: var(--list-padding);
-  margin: var(--list-margin);
+  margin: var(--list-margin) 0;
   background-color: #fff;
   border: 1px solid #ddd;
+  border-radius: 5px;
   cursor: pointer;
   user-select: none;
 }
@@ -89,8 +95,8 @@ main {
   background-color: #ffffff00;
   border-style: solid;
   border-width: 1px;
-  border-color: #3498db;
-  outline-color: #3498db;
+  border-color: var(--outline-color);
+  outline-color: var(--outline-color);
 }
 .project-name-input:read-only {
   outline: none;
@@ -137,7 +143,7 @@ main {
   background-color: #ccc;
 }
 .task-status-container input:checked ~ .custom-checkbox {
-  background-color: #2196F3;
+  background-color: var(--outline-color);
 }
 .custom-checkbox:after {
   content: "";
@@ -163,6 +169,7 @@ main {
 #task-view {
   flex: 1;
   padding: 20px;
+  background-color: #f0f0f0;
 }
 #task-view h2 {
   margin-top: 0;
@@ -179,6 +186,7 @@ main {
   padding: 5px;
   border: 1px solid #ddd;
   border-radius: 3px;
+  outline-color: var(--outline-color);
 }
 #add-task-btn {
   width: max-content;
@@ -197,8 +205,14 @@ main {
   padding: var(--list-padding);
   height: calc(50px + var(--repeat-line-thickness));
 }
-.priority-symbol svg {
+.priority-icon svg {
   fill: var(--secondary-color);
+  pointer-events: none;
+}
+.remove-task-btn svg,
+.remove-project-btn svg,
+.rename-project-btn svg {
+  pointer-events: none;
 }
 .task > span {
   margin-right: auto;
@@ -238,13 +252,13 @@ main {
   padding: 20px;
   background-color: #f9f9f9;
   border: 1px solid #ddd;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   width: 350px;
 }
 
 #task-title {
   font-size: 1.2em;
+  font-weight: bold;
   margin-bottom: 10px;
   padding: 10px;
   border: none;
@@ -261,7 +275,7 @@ main {
 #task-title:focus {
   border-style: solid;
   border-width: 1px;
-  border-color: #3498db;
+  border-color: var(--outline-color);
 }
 
 #due-date-container,
@@ -273,7 +287,6 @@ main {
 
 #due-date-container span,
 #priority-container span {
-  font-weight: bold;
   margin-right: 10px;
   min-width: 80px;
 }
@@ -309,6 +322,9 @@ main {
   margin-top: auto;
   background-color: var(--secondary-color);
 }
+#task-view-panel .remove-button:hover {
+  background-color: var(--secondary-color-hover);
+}
 
 /* Button Styles */
 button {
@@ -316,6 +332,7 @@ button {
   border: none;
   background-color: var(--primary-color);
   color: white;
+  font-weight: bold;
   cursor: pointer;
   border-radius: 3px;
 }
@@ -337,6 +354,7 @@ button.rename-project-btn:hover {
 /* Footer styles */
 footer {
   display: flex;
+  font-size: small;
   justify-content: center;
   background-color: rgb(218, 218, 218);
   padding: 15px 0;

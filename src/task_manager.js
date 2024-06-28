@@ -1,5 +1,5 @@
 import { UITools, Manager } from "./manager.js"
-import { priorityHighSymbol } from "./images/svg.js";
+import { priorityHighIcon, deleteIcon } from "./images/svg.js";
 
 class TaskManager extends Manager {
     constructor(activeProjectGetter, taskList) {
@@ -59,11 +59,12 @@ class TaskManager extends Manager {
         const childElements = {
             "checkbox": checkBoxElement["label"],
             "span": UITools.newElement("span", {}, task.title),
-            "priority-symbol": UITools.newElement("div", {"class": "priority-symbol"}),
+            "priority-icon": UITools.newElement("div", {"class": "priority-icon"}),
             "remove-btn": UITools.newElement("button", {"type": "button", "class": "remove-task-btn"}, "Remove")
         };
-        childElements["priority-symbol"].innerHTML = priorityHighSymbol;
-        childElements["priority-symbol"].style.visibility = "hidden";
+        childElements["priority-icon"].innerHTML = priorityHighIcon;
+        childElements["priority-icon"].style.visibility = "hidden";
+        childElements["remove-btn"].innerHTML = deleteIcon;
 
         Object.values(childElements).forEach(element => {
             parentElement.appendChild(element);
@@ -74,8 +75,7 @@ class TaskManager extends Manager {
 
     createEventListeners(task, element) {
         const labelElement = element.querySelector("label");
-        const inputElement = element.querySelector("input");
-        const titleElement = element.querySelector(":scope > span");
+        const inputElement = element.querySelector("label > input");
         const removeButton = element.querySelector(":scope > button");
 
         labelElement.addEventListener('click', (e) => {
@@ -146,7 +146,7 @@ class TaskManager extends Manager {
     }
 
     togglePrioritySymbol(task, priority) {
-        const element = this.elementMap.get(task).querySelector(".priority-symbol");
+        const element = this.elementMap.get(task).querySelector(".priority-icon");
 
         if (priority == 0) {
             element.style.visibility = "hidden";
