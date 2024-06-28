@@ -21,13 +21,22 @@ export default class DragAndDropper extends Shifter {
     };
 
     handleDragStart(e) {
-        this.elementBeingDragged = e.target;
+        e.target.style.zIndex = "1";
+        this.elementBeingDragged = e.target.closest(`[data-identifier="${this.identifier}"]`);
+        
+        // Add a flag to all elements affected by the drag operation, for styling
+        Array.from(this.parentNode.children).forEach(e => e.classList.add("drag-flag"));
     } 
 
-    handleDragEnd() {
+    handleDragEnd(e) {
         clearTimeout(this.dragTimeout);
+        this.dragTimeout = null;
+        this.elementBeingDragged.style.zIndex = "";
         this.elementBeingDragged = null;
         this.elementHoveredOver = null;
+
+        // Remove flag from all elements affected by the drag operation, for styling
+        Array.from(this.parentNode.children).forEach(e => e.classList.remove("drag-flag"));
     }
 
     handleDragOver(e) {
@@ -48,7 +57,7 @@ export default class DragAndDropper extends Shifter {
     shift() {
         const fromIndex = this.nodeList.findIndex(e => e === this.elementBeingDragged);
         const toIndex = this.nodeList.findIndex(e => e === this.elementHoveredOver);
-        
+
         this.shiftElement(fromIndex, toIndex);
         this.animateShift("ease", "0.5", () => animationEndHandler());
 

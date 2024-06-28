@@ -7,7 +7,7 @@
 </head>
 <body>
     <header>
-        <img id="main_logo" src="#" width="50px" alt="Main Logo" />
+        <div id="main-logo"></div>
         <h1>Todo List</h1>
     </header>
     <main>
@@ -23,7 +23,7 @@
             <div id="tasks-container">
                 <input type="text" id="new-task-input" placeholder="New Task">
                 <button id="add-task-btn">Add Task</button>
-                <div>
+                <div id="filter-container">
                    <span>Filter:</span>
                    <select name="filter" id="task-filter">
                        <option value="0">All</option>
@@ -52,6 +52,7 @@
             <label id="notes-container" for="task-notes">
                 <textarea id="task-notes" class="task-notes"></textarea>
             </label>
+            <button type="button" class="remove-button">Remove</button>
         </section>
     </main>
     <footer>

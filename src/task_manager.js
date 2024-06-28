@@ -46,42 +46,56 @@ class TaskManager extends Manager {
 
     createElement(task) {
         const parentElement = super.createElement(task);
-        const childElements = {
+
+        const checkBoxElement = {
+            "label": UITools.newElement("label", {"class": "task-status-container"}),
             "input": UITools.newElement("input", {"type": "checkbox"}),
+            "span": UITools.newElement("span", {"class": "custom-checkbox"})
+        }
+        checkBoxElement["input"].checked = task.status === true;
+        checkBoxElement["label"].appendChild(checkBoxElement["input"]);
+        checkBoxElement["label"].appendChild(checkBoxElement["span"]);
+
+        const childElements = {
+            "checkbox": checkBoxElement["label"],
             "span": UITools.newElement("span", {}, task.title),
             "priority-symbol": UITools.newElement("div", {"class": "priority-symbol"}),
             "remove-btn": UITools.newElement("button", {"type": "button", "class": "remove-task-btn"}, "Remove")
         };
-        childElements["input"].checked = task.status === true;
         childElements["priority-symbol"].innerHTML = priorityHighSymbol;
         childElements["priority-symbol"].style.visibility = "hidden";
 
         Object.values(childElements).forEach(element => {
-            UITools.appendElement(parentElement, element);
+            parentElement.appendChild(element);
         });
 
         return parentElement;
     }
 
     createEventListeners(task, element) {
+        const labelElement = element.querySelector("label");
         const inputElement = element.querySelector("input");
-        const titleElement = element.querySelector("span");
-        const removeButton = element.querySelector("button");
+        const titleElement = element.querySelector(":scope > span");
+        const removeButton = element.querySelector(":scope > button");
+
+        labelElement.addEventListener('click', (e) => {
+            if (e.target === inputElement) { 
+                task.status = e.target.checked;
+                if (e.target.checked) {
+                    element.classList.add("completed-task");
+                    this.togglePrioritySymbol(task, 0);
+                } else {
+                    element.classList.remove("completed-task");
+                    this.togglePrioritySymbol(task, task.priority);
+                }
+            }
+            e.stopPropagation();
+          });
 
         element.addEventListener("click", (e) => {
             switch(e.target) {
-                case inputElement:
-                    task.status = e.target.checked;
-                    if (e.target.checked) {
-                        titleElement.classList.add("completed-task");
-                        this.togglePrioritySymbol(task, 0);
-                    } else {
-                        titleElement.classList.remove("completed-task");
-                        this.togglePrioritySymbol(task, task.priority);
-                    }
-                    return;
                 case removeButton:
-                    this.removeTask(task);
+                    this.showDialogElement(task);
                     return;
                 default:
                     if (task === this.activeTask) {
@@ -91,6 +105,34 @@ class TaskManager extends Manager {
                     }
             }
         });
+    }
+
+    showDialogElement(task) {
+        const parentElement = UITools.newElement("dialog", {"class": "remove-item-dialog"});
+        const childElements = {
+            "title": UITools.newElement("h2", {}, `${task.title}`),
+            "p": UITools.newElement("p", {}, `Are you sure you want to remove this task?`),
+            "yes-btn": UITools.newElement("button", {"type": "button"}, "Yes"),
+            "no-btn": UITools.newElement("button", {"type": "button"}, "No"),
+        };
+        Object.values(childElements).forEach(element => {
+            parentElement.appendChild(element);
+        });
+
+        this.container.appendChild(parentElement);
+
+        // Event listeners
+        childElements["yes-btn"].addEventListener("click", (e) => {
+            parentElement.remove()
+            this.removeTask(task)
+        });
+
+        childElements["no-btn"].addEventListener("click", (e) => {
+            parentElement.remove()
+        });
+
+        // Display the dialog
+        parentElement.showModal();
     }
 
     getCompletedTasks() {
@@ -104,12 +146,12 @@ class TaskManager extends Manager {
     }
 
     togglePrioritySymbol(task, priority) {
-        const element = this.elementMap.get(task);
+        const element = this.elementMap.get(task).querySelector(".priority-symbol");
 
         if (priority == 0) {
-            element.querySelector(".priority-symbol").style.visibility = "hidden";
+            element.style.visibility = "hidden";
         } else if (priority == 1) {
-            element.querySelector(".priority-symbol").style.visibility = "visible";
+            element.style.visibility = "visible";
         }
     }
 

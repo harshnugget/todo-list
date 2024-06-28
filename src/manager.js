@@ -10,13 +10,6 @@ class UITools {
         return element;
     }
 
-    static appendElement(parent, child) {
-        if (typeof parent === 'string') {
-            parent = document.querySelector(parent);
-        }
-        parent.appendChild(child);
-    } 
-
     static getElementIndex(element) {
         const array = Array.from(element.parentNode.children);
         return array.findIndex(e => e === element);
@@ -77,7 +70,7 @@ class Manager {
             throw ReferenceError("loadElement: No parentElement provided");
         }
 
-        UITools.appendElement(this.container, element);
+        this.container.appendChild(element);
 
         return element;
     }

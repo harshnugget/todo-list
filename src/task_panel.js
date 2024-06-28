@@ -7,6 +7,7 @@ export default class TaskPanel {
         this.dueDateElement = this.panelElement.querySelector("#task-due-date");
         this.priorityElement = this.panelElement.querySelector("#task-priority");
         this.notesElement = this.panelElement.querySelector("#task-notes");
+        this.removeBtn = this.panelElement.querySelector(".remove-button"); 
 
         this.setupEventListeners();
         this.setupData();
@@ -27,6 +28,7 @@ export default class TaskPanel {
         this.priorityElement.addEventListener("change", this.handlePriorityChange.bind(this));
         this.notesElement.addEventListener("click", this.handleNotesInput.bind(this));
         this.notesElement.addEventListener("input", this.changeInputBoxHeight.bind(this));
+        this.removeBtn.addEventListener("click", () => this.taskManager.showDialogElement(this.activeTask));
     }
 
     setupData() {
@@ -39,7 +41,7 @@ export default class TaskPanel {
         e.target.addEventListener("blur", (e) => {
             this.activeTask.title = e.target.value
             const taskElement = this.taskManager.elementMap.get(this.activeTask);
-            const taskTitleElement = taskElement.querySelector("span");
+            const taskTitleElement = taskElement.querySelector(":scope > span");
             taskTitleElement.textContent = e.target.value;
         }, { once: true });
     }

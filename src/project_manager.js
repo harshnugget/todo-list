@@ -78,7 +78,7 @@ export default class ProjectManager extends Manager {
         };
 
         Object.values(childElements).forEach(element => {
-            UITools.appendElement(parentElement, element);
+            parentElement.appendChild(element);
         });
 
         return parentElement;
@@ -95,7 +95,7 @@ export default class ProjectManager extends Manager {
                     this.renameProject(project, input);
                     return;
                 case removeButton:
-                    this.removeProject(project);
+                    this.showDialogElement(project);
                     return;
                 default:
                     if (project !== this.activeProject) {
@@ -103,6 +103,34 @@ export default class ProjectManager extends Manager {
                     } 
             }
         });
+    }
+
+    showDialogElement(project) {
+        const parentElement = UITools.newElement("dialog", {"class": "remove-item-dialog"});
+        const childElements = {
+            "title": UITools.newElement("h2", {}, `${project.title}`),
+            "p": UITools.newElement("p", {}, `Are you sure you want to remove this project?`),
+            "yes-btn": UITools.newElement("button", {"type": "button"}, "Yes"),
+            "no-btn": UITools.newElement("button", {"type": "button"}, "No"),
+        };
+        Object.values(childElements).forEach(element => {
+            parentElement.appendChild(element);
+        });
+
+        this.container.appendChild(parentElement);
+
+        // Event listeners
+        childElements["yes-btn"].addEventListener("click", (e) => {
+            parentElement.remove()
+            this.removeProject(project)
+        });
+
+        childElements["no-btn"].addEventListener("click", (e) => {
+            parentElement.remove()
+        });
+
+        // Display the dialog
+        parentElement.showModal();
     }
 
     projectLoader() {

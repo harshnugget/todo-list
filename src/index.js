@@ -4,9 +4,9 @@ import Task from "./task.js";
 import TaskPanel from "./task_panel.js";
 import ProjectManager from "./project_manager.js";
 import DragAndDropper from "./drag_dropper.js";
-import mainLogo from "./images/main_logo.svg";
+import { mainLogo } from "./images/svg.js";
 
-document.querySelector("#main_logo").src = mainLogo;
+document.querySelector("#main-logo").innerHTML = mainLogo;
 
 const app = (() => {
 
@@ -95,7 +95,8 @@ const app = (() => {
 
         // Task panel stuff
         taskPanel.closeTaskPanel();
-        obj.element.addEventListener("click", () => {
+        
+        obj.element.addEventListener("click", (e) => {
             if (obj.task === taskManager.activeTask) {
                 taskPanel.openTaskPanel(obj.task);
             } else {
