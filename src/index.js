@@ -5,6 +5,7 @@ import TaskPanel from "./task_panel.js";
 import ProjectManager from "./project_manager.js";
 import DragAndDropper from "./drag_dropper.js";
 import { mainLogo } from "./images/svg.js";
+import { UITools } from "./manager.js";
 
 document.querySelector("#main-logo").innerHTML = mainLogo;
 
@@ -28,6 +29,15 @@ const app = (() => {
     );
 
     initializeEventListeners();
+
+    if (localStorage.length === 0) {
+        createProject("Default");
+        createTask("Task 1");
+        createTask("Task 2");
+    } else {
+        parseLocalStorage();
+    }
+
     projectManager.projectLoader();
 
     function initializeEventListeners() {
@@ -35,9 +45,14 @@ const app = (() => {
         const newTaskInput = document.querySelector("#new-task-input");
         const addTaskButton = document.querySelector("#add-task-btn");
         const filterTask = document.querySelector("#task-filter");
+        const resetAllButton = document.querySelector("#reset-all-btn");
+
+        resetAllButton.addEventListener("click", () => {
+            showDialogElement();
+        });
 
         addProjectButton.addEventListener("click", () => {
-            createProject("Untitled Project");
+            createProject("");
         });
 
         newTaskInput.addEventListener("keypress", (e) => {
@@ -69,30 +84,37 @@ const app = (() => {
         });
     }
 
-    function createProject(title) {
-        const project = new Project(title)
-        const obj = projectManager.createProject(project);
-
-        updateLocalStorage();
-        
-        // Select input of newly created projects for renaming
-        if (projectManager.projects.length > 1) {
-            const inputElement = obj.element.querySelector(".project-name-input");
-            projectManager.renameProject(project, inputElement);
+    function createProject(title, project=null) {
+        if (!project) {
+           project = new Project(title);
         }
+        
+        const obj = projectManager.createProject(project);
 
         // Drag and drop stuff
         projectDragger.createEventListeners(obj.element);
 
         // Task panel stuff
         taskPanel.closeTaskPanel();
+
+        // Select project for renaming
+        if (!title) {
+            const inputElement = obj.element.querySelector("input");
+            projectManager.renameProject(obj.project, inputElement);
+        }
     }
 
-    function createTask(title) {
-        const task = new Task(title);
-        const obj = taskManager.createTask(task);
+    function createTask(title, task=null) {
+        if (!projectManager.activeProject) {
+            alert("Cannot add task to a non-existing project");
+            return;
+        }
 
-        updateLocalStorage();
+        if (!task) {
+            task = new Task(title);
+        }
+        
+        const obj = taskManager.createTask(task);
 
         // Drag and drop stuff
         taskDragger.createEventListeners(obj.element);
@@ -110,20 +132,71 @@ const app = (() => {
     }
 
     function updateLocalStorage() {
-        const stringifyObject = JSON.stringify(projectManager.projects);
+        projectManager.updateLocalStorage();
+    }
 
-        localStorage.setItem("projects", stringifyObject);
+    function parseLocalStorage() {
+        const obj = JSON.parse(localStorage.getItem("projects"));
+
+        // Rebuild projects and tasks
+        obj.forEach(project => {
+            const tasks = project.tasks;
+
+            Object.setPrototypeOf(project, Project.prototype);
+            project.tasks = []; // Remove tasks from this project before rebuilding them
+            createProject("", project);
+
+            tasks.forEach(task => {
+                Object.setPrototypeOf(task, Task.prototype);
+                createTask("", task);
+            });
+        });
+
+        projectList.querySelectorAll(".project-name-input").forEach(input => input.setAttribute("readonly", true));
+    }
+
+    function clearLocalStorage() {
+        localStorage.clear();
+    }
+
+    function showDialogElement() {
+        const parentElement = UITools.newElement("dialog", {"class": "remove-item-dialog"});
+        const childElements = {
+            "p1": UITools.newElement("p", {}, `Are you sure you want to reset?`),
+            "p2": UITools.newElement("p", {}, `All projects and tasks will be deleted.`),
+            "yes-btn": UITools.newElement("button", {"type": "button"}, "Yes"),
+            "no-btn": UITools.newElement("button", {"type": "button"}, "No"),
+        };
+        Object.values(childElements).forEach(element => {
+            parentElement.appendChild(element);
+        });
+
+        document.querySelector("body").appendChild(parentElement);
+
+        // Event listeners
+        childElements["yes-btn"].addEventListener("click", (e) => {
+            parentElement.remove()
+            localStorage.clear();
+            location.reload();
+        });
+
+        childElements["no-btn"].addEventListener("click", (e) => {
+            parentElement.remove()
+        });
+
+        // Display the dialog
+        parentElement.showModal();
     }
 
     return {
         projectManager,
         taskManager,
         createProject,
-        createTask
+        createTask,
+        update: updateLocalStorage,
+        parse: parseLocalStorage,
+        clear: clearLocalStorage
     };
 })();
 
 window.app = app;
-window.app.createProject("Default");
-window.app.createTask("Task 1");
-window.app.createTask("Task 2");

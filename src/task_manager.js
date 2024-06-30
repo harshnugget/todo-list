@@ -2,10 +2,11 @@ import { UITools, Manager } from "./manager.js"
 import { priorityHighIcon, deleteIcon } from "./images/svg.js";
 
 class TaskManager extends Manager {
-    constructor(activeProjectGetter, taskList) {
+    constructor(activeProjectGetter, taskList, updateLocalStorage=null) {
         super(taskList);
         this.activeProjectGetter = activeProjectGetter;
         this.tasks = [];
+        this.updateLocalStorage = updateLocalStorage;
     }
 
     get activeProject() {
@@ -34,6 +35,7 @@ class TaskManager extends Manager {
         this.activeProject.addTask(task);
         this.createEventListeners(task, obj.element);
         this.clearActiveTask();
+        this.togglePrioritySymbol(task, task.priority);
 
         return { task, element: obj.element }
     }
@@ -42,6 +44,8 @@ class TaskManager extends Manager {
         super.removeObject(task);
         this.activeProject.deleteTask(task);
         this.clearActiveTask();
+
+        this.updateLocalStorage();
     }
 
     createElement(task) {
@@ -52,18 +56,21 @@ class TaskManager extends Manager {
             "input": UITools.newElement("input", {"type": "checkbox"}),
             "span": UITools.newElement("span", {"class": "custom-checkbox"})
         }
-        checkBoxElement["input"].checked = task.status === true;
+        checkBoxElement["input"].checked = task.status;
         checkBoxElement["label"].appendChild(checkBoxElement["input"]);
         checkBoxElement["label"].appendChild(checkBoxElement["span"]);
+
+        if (task.status === true) {
+            parentElement.classList.add("completed-task");
+        }
 
         const childElements = {
             "checkbox": checkBoxElement["label"],
             "span": UITools.newElement("span", {}, task.title),
             "priority-icon": UITools.newElement("div", {"class": "priority-icon"}),
-            "remove-btn": UITools.newElement("button", {"type": "button", "class": "remove-task-btn"}, "Remove")
+            "remove-btn": UITools.newElement("button", {"title": "Delete Task", "type": "button", "class": "remove-task-btn"}, "Remove")
         };
         childElements["priority-icon"].innerHTML = priorityHighIcon;
-        childElements["priority-icon"].style.visibility = "hidden";
         childElements["remove-btn"].innerHTML = deleteIcon;
 
         Object.values(childElements).forEach(element => {
@@ -83,7 +90,7 @@ class TaskManager extends Manager {
                 task.status = e.target.checked;
                 if (e.target.checked) {
                     element.classList.add("completed-task");
-                    this.togglePrioritySymbol(task, 0);
+                    this.togglePrioritySymbol(task, task.priority);
                 } else {
                     element.classList.remove("completed-task");
                     this.togglePrioritySymbol(task, task.priority);
@@ -147,12 +154,18 @@ class TaskManager extends Manager {
 
     togglePrioritySymbol(task, priority) {
         const element = this.elementMap.get(task).querySelector(".priority-icon");
-
-        if (priority == 0) {
+        
+        if (task.status === true) {
             element.style.visibility = "hidden";
+        } else if (priority == 0) {
+            element.style.visibility = "hidden";
+            task.priority = 0;
         } else if (priority == 1) {
             element.style.visibility = "visible";
+            task.priority = 1;
         }
+
+        this.updateLocalStorage();
     }
 
     taskLoader(filter=0) {
@@ -170,6 +183,8 @@ class TaskManager extends Manager {
         } else {
             console.error('taskLoader: Invalid filter value:', filter);
         }  
+
+        this.updateLocalStorage();
     }
 }
 

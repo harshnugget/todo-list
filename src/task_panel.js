@@ -1,10 +1,9 @@
-import { deleteIcon } from "./images/svg.js";
-
 export default class TaskPanel {
     constructor(taskManager) {
         this.taskManager = taskManager
         
         this.panelElement = document.querySelector("#task-view-panel");
+        this.closeButton = this.panelElement.querySelector("#close-task-panel-btn");
         this.titleElement = this.panelElement.querySelector("#task-title");
         this.dueDateElement = this.panelElement.querySelector("#task-due-date");
         this.priorityElement = this.panelElement.querySelector("#task-priority");
@@ -25,18 +24,23 @@ export default class TaskPanel {
                 this.closeTaskPanel();
             }
         });
+        this.closeButton.addEventListener("click", this.closeTaskPanel.bind(this));
         this.titleElement.addEventListener("click", this.handleTitleChange.bind(this));
         this.dueDateElement.addEventListener("click", this.handleDateChange.bind(this));
         this.priorityElement.addEventListener("change", this.handlePriorityChange.bind(this));
         this.notesElement.addEventListener("click", this.handleNotesInput.bind(this));
-        this.notesElement.addEventListener("input", this.changeInputBoxHeight.bind(this));
+        this.notesElement.addEventListener("input", this.updateNotesTextAreaHeight.bind(this));
+        this.notesElement.addEventListener("blur", this.updateLocalStorage.bind(this));
         this.removeBtn.addEventListener("click", () => this.taskManager.showDialogElement(this.activeTask));
     }
 
     setupData() {
-        this.notesElement.rows = "1";
-        this.notesElement.style.resize = "none";
-        this.notesElement.style.overflow = "hidden";    // This is important to have on the clone
+        this.closeTaskPanel();
+
+        this.notesElement.style.height = 'auto';
+        if (this.notesElement.scrollHeight) {
+            this.notesElement.style.height = this.notesElement.scrollHeight + 'px';
+        }
     }
 
     handleTitleChange(e) {
@@ -45,20 +49,26 @@ export default class TaskPanel {
             const taskElement = this.taskManager.elementMap.get(this.activeTask);
             const taskTitleElement = taskElement.querySelector(":scope > span");
             taskTitleElement.textContent = e.target.value;
+            this.updateLocalStorage();
         }, { once: true });
     }
 
     handleDateChange(e) {
-        e.target.addEventListener("blur", (e) => this.activeTask.dueDate = e.target.value, { once: true });
+        e.target.addEventListener("blur", (e) => {
+            this.activeTask.dueDate = e.target.value
+            this.updateLocalStorage();
+        }, { once: true });
     }
 
     handlePriorityChange(e) {
         this.taskManager.togglePrioritySymbol(this.activeTask, e.target.value);
-        this.activeTask.priority = parseInt(e.target.value);
     }
 
     handleNotesInput(e) {
-        e.target.addEventListener("blur", (e) => this.activeTask.notes = e.target.value, { once: true });
+        e.target.addEventListener("blur", (e) => {
+            this.activeTask.notes = e.target.value
+            this.updateLocalStorage();
+        }, { once: true });
     }
 
     updateTaskPanel(title, dueDate, priority, notes) {
@@ -73,39 +83,20 @@ export default class TaskPanel {
         if (task) {
            this.updateTaskPanel(task.title, task.dueDate, task.priority, task.notes); 
         }
+        this.updateNotesTextAreaHeight();
     }
 
     closeTaskPanel() {
+        this.taskManager.clearActiveTask();
         this.panelElement.style.display = "none";
     }
 
-    changeInputBoxHeight(e) {
-        if (!this.clone) {
-            this.clone = this.cloneElement(e.target);
-        }
-
-        this.clone.value = e.target.value;
-
-        // Calculate the required number of rows based on scrollHeight
-        const scrollHeight = this.clone.scrollHeight;
-        const clientHeight = e.target.clientHeight;
-        
-        // Adjust rows based on content height
-        if (scrollHeight > clientHeight) {
-            e.target.rows += 1;
-        } else if (scrollHeight < clientHeight) {
-            e.target.rows -= 1;
-        }
+    updateNotesTextAreaHeight() {
+        this.notesElement.style.height = 'auto'; // Reset the height
+        this.notesElement.style.height = this.notesElement.scrollHeight + 'px'; // Set the height to match the scroll height
     }
 
-    cloneElement(element) {
-        const clone = element.cloneNode();
-        clone.removeAttribute("id");
-        clone.style.position = "fixed";
-        clone.style.width = `${element.offsetWidth}px`;
-        clone.style.visibility = "hidden";
-        element.parentNode.appendChild(clone);
-        
-        return clone;
+    updateLocalStorage() {
+        this.taskManager.updateLocalStorage();
     }
 }

@@ -1,11 +1,13 @@
 import { UITools, Manager } from "./manager.js"
 import TaskManager from "./task_manager.js";
 import { deleteIcon, renameIcon } from "./images/svg.js";
+import Project from "./project.js";
+import Task from "./task.js";
 
 export default class ProjectManager extends Manager {
     constructor(projectList, taskList) {
         super(projectList);
-        this.taskManager = new TaskManager(() => this.activeProject, taskList);
+        this.taskManager = new TaskManager(() => this.activeProject, taskList, this.updateLocalStorage.bind(this));
         this.projects = [];
     }
 
@@ -28,6 +30,8 @@ export default class ProjectManager extends Manager {
         this.projects.push(project);
         this.activeProject = project;
         this.createEventListeners(project, obj.element);
+
+        this.updateLocalStorage();
         
         return { project, element: obj.element }
     }
@@ -50,9 +54,18 @@ export default class ProjectManager extends Manager {
             }
             return;
         }
+
+        this.updateLocalStorage();
     }
 
     renameProject(project, inputElement) {
+        const updateValue = () => {
+            project.title = inputElement.value;
+            inputElement.setAttribute("readonly", true);
+            inputElement.removeEventListener("blur", updateValue);
+            this.updateLocalStorage();
+        }
+
         inputElement.removeAttribute("readonly");
         inputElement.focus();
         inputElement.select();
@@ -62,20 +75,14 @@ export default class ProjectManager extends Manager {
                 updateValue();
             }
           });
-
-        function updateValue() {
-            project.title = inputElement.value;
-            inputElement.setAttribute("readonly", true);
-            inputElement.removeEventListener("blur", updateValue);
-        }
     }
 
     createElement(project) {
         const parentElement = super.createElement(project);
         const childElements = {
-            "input": UITools.newElement("input", {"type": "text", "class": "project-name-input", "placeholder": "Project Name", "value": `${project.title || "Untitled Project"}`, "readonly": true}), 
-            "rename-btn": UITools.newElement("button", {"type": "button", "class": "rename-project-btn"}, "Rename"), 
-            "remove-btn": UITools.newElement("button", {"type": "button", "class": "remove-project-btn"}, "Remove")
+            "input": UITools.newElement("input", {"type": "text", "class": "project-name-input", "placeholder": "Untitled Project", "value": `${project.title}`, "readonly": true}), 
+            "rename-btn": UITools.newElement("button", {"title": "Rename Project", "type": "button", "class": "rename-project-btn"}, "Rename"), 
+            "remove-btn": UITools.newElement("button", {"title": "Delete Project", "type": "button", "class": "remove-project-btn"}, "Remove")
         };
         childElements["rename-btn"].innerHTML = renameIcon;
         childElements["remove-btn"].innerHTML = deleteIcon;
@@ -139,5 +146,10 @@ export default class ProjectManager extends Manager {
     projectLoader() {
         super.objectLoader(this.projects);
         this.activeProject = this.projects[0];
+    }
+
+    updateLocalStorage() {
+        const projects = this.projects;
+        localStorage.setItem("projects", JSON.stringify(projects));
     }
 }
