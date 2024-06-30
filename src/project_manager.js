@@ -1,8 +1,6 @@
 import { UITools, Manager } from "./manager.js"
 import TaskManager from "./task_manager.js";
 import { deleteIcon, renameIcon } from "./images/svg.js";
-import Project from "./project.js";
-import Task from "./task.js";
 
 export default class ProjectManager extends Manager {
     constructor(projectList, taskList) {
