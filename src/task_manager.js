@@ -6,6 +6,7 @@ class TaskManager extends Manager {
         super(taskList);
         this.activeProjectGetter = activeProjectGetter;
         this.tasks = [];
+        this.filter = 0;
         this.updateLocalStorage = updateLocalStorage;
     }
 
@@ -91,9 +92,11 @@ class TaskManager extends Manager {
                 if (e.target.checked) {
                     element.classList.add("completed-task");
                     this.togglePrioritySymbol(task, task.priority);
+                    this.taskLoader(this.filter);
                 } else {
                     element.classList.remove("completed-task");
                     this.togglePrioritySymbol(task, task.priority);
+                    this.taskLoader(this.filter);
                 }
             }
             e.stopPropagation();
@@ -168,11 +171,13 @@ class TaskManager extends Manager {
         this.updateLocalStorage();
     }
 
-    taskLoader(filter=0) {
+    taskLoader(filter=this.filter) {
         if (!this.activeProject) {
             this.tasks = [];
         }
         this.clearActiveTask();
+        
+        this.filter = filter;
  
         if (filter === 0) {
            super.objectLoader(this.tasks); 
