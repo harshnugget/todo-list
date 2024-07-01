@@ -197,6 +197,8 @@ const app = (() => {
         parse: parseLocalStorage,
         clear: clearLocalStorage
     };
-})();
+});
 
-window.app = app;
+window.addEventListener('load', () => {
+    window.app = app();
+});
