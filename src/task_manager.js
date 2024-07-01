@@ -25,6 +25,8 @@ class TaskManager extends Manager {
 
     set activeTask(task) {
         super.activeObject = task;
+        
+        this.updateLocalStorage();
     }
 
     clearActiveTask() {
