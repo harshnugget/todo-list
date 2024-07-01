@@ -50,7 +50,7 @@ class TaskManager extends Manager {
     }
 
     createElement(task) {
-        const parentElement = super.createElement(task);
+        const parentElement = super.createElement("task");
 
         const checkBoxElement = {
             "label": UITools.newElement("label", {"class": "task-status-container"}),

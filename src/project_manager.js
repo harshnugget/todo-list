@@ -76,7 +76,7 @@ export default class ProjectManager extends Manager {
     }
 
     createElement(project) {
-        const parentElement = super.createElement(project);
+        const parentElement = super.createElement("project");
         const childElements = {
             "input": UITools.newElement("input", {"type": "text", "class": "project-name-input", "placeholder": "Untitled Project", "value": `${project.title}`, "readonly": true}), 
             "rename-btn": UITools.newElement("button", {"title": "Rename Project", "type": "button", "class": "rename-project-btn"}, "Rename"), 

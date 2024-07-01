@@ -56,8 +56,7 @@ class Manager {
         return { object, element };
     }
 
-    createElement(object) {
-        const className = object.constructor.name.toLowerCase()
+    createElement(className="") {
         const element = UITools.newElement("li", {"class": `${className}`});
 
         return element;

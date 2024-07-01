@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "build": "webpack --config webpack.prod.js",
-    "start": "webpack serve --open --config webpack.dev.js"
+    "start": "webpack serve --open --config webpack.dev.js",
+    "todo": "git subtree push --prefix dist origin gh-pages"
   },
   "keywords": [],
   "author": "",
