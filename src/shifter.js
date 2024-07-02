@@ -5,7 +5,7 @@ export default class Shifter {
     }
 
     get nodeList() {
-        return Array.from(this.parentNode.children);
+        return [...this.parentNode.children];
     }
 
     updateCoordinates() {

@@ -11,7 +11,7 @@ class UITools {
     }
 
     static getElementIndex(element) {
-        const array = Array.from(element.parentNode.children);
+        const array = [...element.parentNode.children];
         return array.findIndex(e => e === element);
     }
 }
