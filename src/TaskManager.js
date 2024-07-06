@@ -1,7 +1,7 @@
-import { UITools, Manager } from "./manager.js"
+import { UITools, Manager } from "./Manager.js"
 import { priorityHighIcon, deleteIcon } from "./images/svg.js";
 
-class TaskManager extends Manager {
+export default class TaskManager extends Manager {
     constructor(activeProjectGetter, taskList, updateLocalStorage=null) {
         super(taskList);
         this.activeProjectGetter = activeProjectGetter;
@@ -203,5 +203,3 @@ class TaskManager extends Manager {
         this.updateLocalStorage();
     }
 }
-
-export default TaskManager;

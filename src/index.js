@@ -1,11 +1,11 @@
 import "./style.css";
 import Project from "./project.js";
 import Task from "./task.js";
-import TaskPanel from "./task_panel.js";
-import ProjectManager from "./project_manager.js";
+import TaskPanel from "./taskPanel.js";
+import ProjectManager from "./projectManager.js";
 import DragAndDropper from "./drag_dropper.js";
 import { mainLogo } from "./images/svg.js";
-import { UITools } from "./manager.js";
+import { UITools } from "./Manager.js";
 
 document.querySelector("#main-logo").innerHTML = mainLogo;
 

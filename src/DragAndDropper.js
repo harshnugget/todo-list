@@ -1,4 +1,4 @@
-import Shifter from "./shifter.js";
+import Shifter from "./Shifter.js";
 
 export default class DragAndDropper extends Shifter {
     constructor(parentNode, objectArrayGetter=null) {

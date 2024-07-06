@@ -98,4 +98,5 @@ class Manager {
     }
 }
 
-export { UITools, Manager };
+export default Manager;
+export { UITools };
