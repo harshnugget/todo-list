@@ -6,7 +6,7 @@ class TaskManager extends Manager {
         super(taskList);
         this.activeProjectGetter = activeProjectGetter;
         this.tasks = [];
-        this.filter = 0;
+        this.filterValue = 0;
         this.updateLocalStorage = updateLocalStorage;
     }
 
@@ -83,23 +83,52 @@ class TaskManager extends Manager {
         return parentElement;
     }
 
+    getCompletedTasks() {
+        return this.tasks.filter(task => task.status === false);
+    }
+
+    getUncompletedTasks() {
+        return this.tasks.filter(task => task.status === true);
+    }
+
+    // Handle task filtering
+    filterTasks(value=this.filterValue) {
+        if (value != this.filterValue) {
+            this.filterValue = value;
+        } 
+       
+        let tasks;
+
+        if (value == 0) {
+            tasks = this.tasks;
+         } else if (value == 1) {
+            tasks = this.getCompletedTasks();
+         } else if (value == 2) {
+            tasks = this.getUncompletedTasks();
+         } else {
+             console.error('taskFilter: Invalid filter value:', value);
+             return;
+         }
+
+         this.taskLoader(tasks); 
+    }
+
     createEventListeners(task, element) {
         const labelElement = element.querySelector("label");
         const inputElement = element.querySelector("label > input");
         const removeButton = element.querySelector(":scope > button");
 
+        // Handle task status
         labelElement.addEventListener('click', (e) => {
             if (e.target === inputElement) { 
                 task.status = e.target.checked;
                 if (e.target.checked) {
                     element.classList.add("completed-task");
-                    this.togglePrioritySymbol(task, task.priority);
-                    this.taskLoader(this.filter);
                 } else {
                     element.classList.remove("completed-task");
-                    this.togglePrioritySymbol(task, task.priority);
-                    this.taskLoader(this.filter);
                 }
+                this.togglePrioritySymbol(task, task.priority);
+                this.filterTasks();
             }
             e.stopPropagation();
           });
@@ -147,16 +176,6 @@ class TaskManager extends Manager {
         parentElement.showModal();
     }
 
-    getCompletedTasks() {
-        const tasks = this.tasks.filter(task => task.status === false);
-        return tasks;
-    }
-
-    getUncompletedTasks() {
-        const tasks = this.tasks.filter(task => task.status === true);
-        return tasks;
-    }
-
     togglePrioritySymbol(task, priority) {
         const element = this.elementMap.get(task).querySelector(".priority-icon");
         
@@ -173,23 +192,13 @@ class TaskManager extends Manager {
         this.updateLocalStorage();
     }
 
-    taskLoader(filter=this.filter) {
-        if (!this.activeProject) {
-            this.tasks = [];
+    taskLoader(tasks) {
+        if (this.activeProject && !tasks) {
+            tasks = this.activeProject.tasks;
         }
         this.clearActiveTask();
         
-        this.filter = filter;
- 
-        if (filter === 0) {
-           super.objectLoader(this.tasks); 
-        } else if (filter === 1) {
-            super.objectLoader(this.getCompletedTasks());
-        } else if (filter === 2) {
-            super.objectLoader(this.getUncompletedTasks());
-        } else {
-            console.error('taskLoader: Invalid filter value:', filter);
-        }  
+        super.objectLoader(tasks);
 
         this.updateLocalStorage();
     }

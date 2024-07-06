@@ -28,24 +28,41 @@ const app = (() => {
         () => projectManager.activeProject.tasks
     );
 
-    initializeEventListeners();
+    function showDialogElement() {
+        const parentElement = UITools.newElement("dialog", {"class": "remove-item-dialog"});
+        const childElements = {
+            "p1": UITools.newElement("p", {}, `Are you sure you want to reset?`),
+            "p2": UITools.newElement("p", {}, `All your projects and tasks will be deleted.`),
+            "yes-btn": UITools.newElement("button", {"type": "button"}, "Yes"),
+            "no-btn": UITools.newElement("button", {"type": "button"}, "No"),
+        };
+        Object.values(childElements).forEach(element => {
+            parentElement.appendChild(element);
+        });
 
-    if (localStorage.length === 0) {
-        createProject("Default");
-        createTask("Task 1");
-        createTask("Task 2");
-    } else {
-        parseLocalStorage();
+        document.querySelector("body").appendChild(parentElement);
+
+        // Event listeners
+        childElements["yes-btn"].addEventListener("click", (e) => {
+            parentElement.remove()
+            localStorage.clear();
+            location.reload();
+        });
+
+        childElements["no-btn"].addEventListener("click", (e) => {
+            parentElement.remove()
+        });
+
+        // Display the dialog
+        parentElement.showModal();
     }
 
-    projectManager.projectLoader();
-
     function initializeEventListeners() {
+        const resetAllButton = document.querySelector("#reset-all-btn");
         const addProjectButton = document.querySelector("#add-project-btn");
         const newTaskInput = document.querySelector("#new-task-input");
         const addTaskButton = document.querySelector("#add-task-btn");
-        const filterTask = document.querySelector("#task-filter");
-        const resetAllButton = document.querySelector("#reset-all-btn");
+        const filterTaskDropDown = document.querySelector("#task-filter");
 
         resetAllButton.addEventListener("click", () => {
             showDialogElement();
@@ -69,20 +86,12 @@ const app = (() => {
             }
         });
 
-        filterTask.addEventListener("change", (e) => {
-            switch (e.target.value) {
-                case "0":
-                    taskManager.taskLoader(0);
-                    return;
-                case "1":
-                    taskManager.taskLoader(1);
-                    return;
-                case "2":
-                    taskManager.taskLoader(2);
-                    return;
-            }
+        filterTaskDropDown.addEventListener("change", (e) => {
+            taskManager.filterTasks(e.target.value);
         });
     }
+
+    initializeEventListeners();
 
     function createProject(title, project=null) {
         if (!project) {
@@ -131,10 +140,6 @@ const app = (() => {
         });
     }
 
-    function updateLocalStorage() {
-        projectManager.updateLocalStorage();
-    }
-
     function parseLocalStorage() {
         const obj = JSON.parse(localStorage.getItem("projects"));
 
@@ -155,47 +160,23 @@ const app = (() => {
         projectList.querySelectorAll(".project-name-input").forEach(input => input.setAttribute("readonly", true));
     }
 
-    function clearLocalStorage() {
-        localStorage.clear();
+    // Create default projects/tasks if no localStorage
+    if (localStorage.length === 0) {
+        createProject("Default");
+        createTask("Task 1");
+        createTask("Task 2");
+    } else {
+        parseLocalStorage();
     }
 
-    function showDialogElement() {
-        const parentElement = UITools.newElement("dialog", {"class": "remove-item-dialog"});
-        const childElements = {
-            "p1": UITools.newElement("p", {}, `Are you sure you want to reset?`),
-            "p2": UITools.newElement("p", {}, `All projects and tasks will be deleted.`),
-            "yes-btn": UITools.newElement("button", {"type": "button"}, "Yes"),
-            "no-btn": UITools.newElement("button", {"type": "button"}, "No"),
-        };
-        Object.values(childElements).forEach(element => {
-            parentElement.appendChild(element);
-        });
-
-        document.querySelector("body").appendChild(parentElement);
-
-        // Event listeners
-        childElements["yes-btn"].addEventListener("click", (e) => {
-            parentElement.remove()
-            localStorage.clear();
-            location.reload();
-        });
-
-        childElements["no-btn"].addEventListener("click", (e) => {
-            parentElement.remove()
-        });
-
-        // Display the dialog
-        parentElement.showModal();
-    }
+    // Load projects into DOM
+    projectManager.projectLoader();
 
     return {
         projectManager,
         taskManager,
         createProject,
-        createTask,
-        update: updateLocalStorage,
-        parse: parseLocalStorage,
-        clear: clearLocalStorage
+        createTask
     };
 });
 
