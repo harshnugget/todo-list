@@ -4,7 +4,7 @@
   --list-margin: 4px;
   --sidebar-width: 350px;
   --line-thickness-thin: 2px;
-  --primary-color: #4CAF50;
+  --primary-color: #4caf50;
   --primary-color-hover: #449e47;
   --secondary-color: #f44336;
   --secondary-color-hover: #da3c30;
@@ -173,7 +173,7 @@ main {
   background-color: var(--outline-color);
 }
 .custom-checkbox:after {
-  content: "";
+  content: '';
   position: absolute;
   display: none;
 }
@@ -224,7 +224,12 @@ main {
   padding: 0;
   margin: 0;
   list-style: none;
-  background: repeating-linear-gradient(#e4e4e4, #e4e4e4 var(--line-thickness-thin), #ffffff00 var(--line-thickness-thin), #ffffff00 calc(50px + var(--line-thickness-thin) + var(--list-margin)));
+  background: repeating-linear-gradient(
+    #e4e4e4,
+    #e4e4e4 var(--line-thickness-thin),
+    #ffffff00 var(--line-thickness-thin),
+    #ffffff00 calc(50px + var(--line-thickness-thin) + var(--list-margin))
+  );
   background-position: 0 1px; /* Offset the background from the top */
 }
 .task {
